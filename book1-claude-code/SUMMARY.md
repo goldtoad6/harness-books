@@ -1,7 +1,7 @@
 # Summary
 
 - [封面与导读](index.md)
-- [前言：为什么今天需要 Harness Engineering](preface.md)
+- [序言 Harness、终端与工程约束](preface.md)
 - [第 1 章 为什么 Harness Engineering 不是 Prompt Engineering 的大号别名](chapter-01-why-harness-engineering.md)
 - [第 2 章 Prompt 不是输入框，而是控制面](chapter-02-prompt-is-control-plane.md)
 - [第 3 章 Query Loop：Agent 不是在答题，而是在持续接管工作流](chapter-03-query-loop-heartbeat.md)

@@ -35,6 +35,18 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install PDF export dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            pandoc \
+            librsvg2-bin \
+            fonts-noto-cjk \
+            fonts-noto-core \
+            texlive-latex-extra \
+            texlive-xetex \
+            texlive-lang-chinese
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
@@ -48,9 +60,19 @@ jobs:
           cd book2-comparing
           npx --yes honkit build . _book
 
+      - name: Export PDFs
+        env:
+          PDF_MAINFONT: Noto Serif CJK SC
+          PDF_CJK_MAINFONT: Noto Serif CJK SC
+          PDF_MONOFONT: Noto Sans Mono
+        run: |
+          python3 tools/book-kit/export_pdf.py book1-claude-code
+          python3 tools/book-kit/export_pdf.py book2-comparing
+
       - name: Assemble unified Pages site
         env:
-          SITE_URL: https://wquguru.github.io/harness-books
+          SITE_URL: https://harness-books.agentway.dev
+          CUSTOM_DOMAIN: harness-books.agentway.dev
         run: python3 tools/book-kit/build_pages_site.py
 
       - name: Upload Pages artifact

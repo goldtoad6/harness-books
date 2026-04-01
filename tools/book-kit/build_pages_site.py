@@ -17,7 +17,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 BOOK_DIRS = ("book1-claude-code", "book2-comparing")
 DIST_DIR = REPO_ROOT / "dist"
 OG_DIRNAME = "og"
-DEFAULT_SITE_URL = "https://wquguru.github.io/harness-books"
+DEFAULT_SITE_URL = "https://harness-books.agentway.dev"
+DEFAULT_CUSTOM_DOMAIN = "harness-books.agentway.dev"
 BOOK_SWITCHER_CSS = """
 <style>
 :root {
@@ -25,6 +26,7 @@ BOOK_SWITCHER_CSS = """
   --hb-page-bg-soft: #efe8d9;
   --hb-panel-bg: rgba(252, 248, 239, 0.86);
   --hb-panel-strong: rgba(247, 241, 230, 0.96);
+  --hb-summary-width: 320px;
   --hb-nav-bg: rgba(249, 245, 237, 0.82);
   --hb-nav-border: rgba(53, 41, 27, 0.12);
   --hb-nav-text: #2d2418;
@@ -45,10 +47,15 @@ BOOK_SWITCHER_CSS = """
 }
 
 .book.with-site-switcher .book-summary {
-  width: 320px;
+  left: calc(-1 * var(--hb-summary-width));
+  width: var(--hb-summary-width);
   background: rgba(242, 235, 223, 0.72);
   border-right: 1px solid rgba(53, 41, 27, 0.08);
   box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.35);
+}
+
+.book.with-site-switcher.with-summary .book-summary {
+  left: 0;
 }
 
 .book.with-site-switcher .book-summary {
@@ -297,6 +304,30 @@ BOOK_SWITCHER_CSS = """
   gap: 6px;
 }
 
+@media screen and (min-width: 600px) {
+  .book.with-site-switcher.with-summary .book-body {
+    left: var(--hb-summary-width);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .book.with-site-switcher .book-summary {
+    left: calc(-1 * var(--hb-summary-width));
+  }
+
+  .book.with-site-switcher.with-summary .book-summary {
+    left: 0;
+  }
+
+  .book.with-site-switcher.with-summary .book-body {
+    -webkit-transform: translateX(var(--hb-summary-width));
+    -moz-transform: translateX(var(--hb-summary-width));
+    -ms-transform: translateX(var(--hb-summary-width));
+    -o-transform: translateX(var(--hb-summary-width));
+    transform: translateX(var(--hb-summary-width));
+  }
+}
+
 .hb-site-switcher__link {
   display: inline-flex;
   align-items: center;
@@ -327,6 +358,10 @@ BOOK_SWITCHER_CSS = """
 }
 
 @media (max-width: 860px) {
+  :root {
+    --hb-summary-width: 290px;
+  }
+
   .book.with-site-switcher .book-summary,
   .book.with-site-switcher .book-body {
     padding-top: 92px;
@@ -342,7 +377,7 @@ BOOK_SWITCHER_CSS = """
   }
 
   .book.with-site-switcher .book-summary {
-    width: 290px;
+    width: var(--hb-summary-width);
   }
 
   .book.with-site-switcher .book-body .page-wrapper .page-inner {
@@ -361,13 +396,17 @@ BOOK_SWITCHER_CSS = """
 }
 
 @media (max-width: 640px) {
+  :root {
+    --hb-summary-width: min(86vw, 320px);
+  }
+
   .book.with-site-switcher .book-summary,
   .book.with-site-switcher .book-body {
     padding-top: 86px;
   }
 
   .book.with-site-switcher .book-summary {
-    width: min(86vw, 320px);
+    width: var(--hb-summary-width);
   }
 
   .book.with-site-switcher .book-body .page-wrapper .page-inner {
@@ -393,11 +432,14 @@ BOOK_SWITCHER_CSS = """
     top: 6px;
     left: 6px;
     right: 6px;
+    flex-direction: column;
+    align-items: stretch;
     padding: 8px 10px;
     border-radius: 18px;
   }
 
   .hb-site-switcher__brand {
+    width: 100%;
     padding-left: 0;
   }
 
@@ -513,17 +555,18 @@ a {
 
 .hero__eyebrow {
   margin: 0 0 6px;
-  font-size: 14px;
+  font-size: clamp(1.05rem, 2vw, 1.48rem);
   font-weight: 700;
-  letter-spacing: 0.06em;
+  line-height: 1.3;
+  letter-spacing: 0.03em;
   color: var(--accent);
 }
 
 .hero h1 {
   margin: 0;
   max-width: 14ch;
-  font-size: clamp(1.95rem, 4.2vw, 3.45rem);
-  line-height: 1.02;
+  font-size: clamp(1.72rem, 3.3vw, 2.72rem);
+  line-height: 1.08;
   color: var(--text-strong);
 }
 
@@ -781,9 +824,13 @@ a {
 }
 
 @media (max-width: 540px) {
+  .hero__eyebrow {
+    font-size: clamp(1rem, 5.4vw, 1.32rem);
+  }
+
   .hero h1 {
     max-width: 100%;
-    font-size: clamp(1.8rem, 8.6vw, 2.65rem);
+    font-size: clamp(1.5rem, 7vw, 2.05rem);
   }
 
   .hero__principles {
@@ -822,11 +869,22 @@ def parse_args() -> argparse.Namespace:
         default=os.environ.get("SITE_URL", DEFAULT_SITE_URL).strip(),
         help="Public base URL for absolute Open Graph and Twitter card URLs.",
     )
+    parser.add_argument(
+        "--custom-domain",
+        default=os.environ.get("CUSTOM_DOMAIN", DEFAULT_CUSTOM_DOMAIN).strip(),
+        help="Custom domain written to dist/CNAME for GitHub Pages.",
+    )
     return parser.parse_args()
 
 
 def load_book_metadata(book_dir: Path) -> dict[str, str]:
     book_json = json.loads((book_dir / "book.json").read_text(encoding="utf-8"))
+    book_meta_path = book_dir / "book.meta.json"
+    book_meta = (
+        json.loads(book_meta_path.read_text(encoding="utf-8"))
+        if book_meta_path.exists()
+        else {}
+    )
     extras = {
         "book1-claude-code": {
             "cover": f"{book_dir.name}/assets/cover-wxb.svg",
@@ -852,6 +910,7 @@ def load_book_metadata(book_dir: Path) -> dict[str, str]:
         "lede": extras.get("lede", book_json.get("description", "")),
         "summary": extras.get("summary", book_json.get("description", "")),
         "facts": extras.get("facts", ()),
+        "pdf_path": book_meta.get("outputs", {}).get("pdf", ""),
     }
 
 
@@ -1003,6 +1062,7 @@ def build_switcher_markup(current_slug: str, books: list[dict[str, str]]) -> str
     link_parts = [
         '<a class="hb-site-switcher__link" href="../index.html">首页</a>'
     ]
+    current_book = next(book for book in books if book["slug"] == current_slug)
     for book in books:
         classes = "hb-site-switcher__link"
         if book["slug"] == current_slug:
@@ -1011,16 +1071,18 @@ def build_switcher_markup(current_slug: str, books: list[dict[str, str]]) -> str
             f'<a class="{classes}" href="../{escape(book["slug"])}/">'
             f'{escape(book["title"])}</a>'
         )
+    if current_book.get("pdf_path"):
+        link_parts.append(
+            f'<a class="hb-site-switcher__link" href="../{escape(current_slug)}/{escape(current_book["pdf_path"])}" download>'
+            "下载 PDF</a>"
+        )
 
     links_html = "".join(link_parts)
-    current_title = next(
-        book["title"] for book in books if book["slug"] == current_slug
-    )
     return (
         '<div class="hb-site-switcher" role="navigation" aria-label="Book switcher">'
         '<div class="hb-site-switcher__brand">'
         '<p class="hb-site-switcher__eyebrow">Harness Books</p>'
-        f'<p class="hb-site-switcher__title">{escape(current_title)}</p>'
+        f'<p class="hb-site-switcher__title">{escape(current_book["title"])}</p>'
         "</div>"
         f'<div class="hb-site-switcher__links">{links_html}</div>'
         "</div>"
@@ -1298,6 +1360,13 @@ def make_index_html(books: list[dict[str, str]]) -> str:
         facts_html = "".join(
             f"<span>{escape(fact)}</span>" for fact in book.get("facts", ())
         )
+        pdf_action = ""
+        if book.get("pdf_path"):
+            pdf_action = (
+                f'<a class="button button--secondary" '
+                f'href="{escape(book["slug"])}/{escape(book["pdf_path"])}" download>'
+                "下载 PDF</a>"
+            )
         cards.append(
             f"""
 <article class="book-card">
@@ -1319,6 +1388,7 @@ def make_index_html(books: list[dict[str, str]]) -> str:
     <div class="book-card__actions">
       <a class="button button--primary" href="{escape(book["slug"])}/">在线阅读</a>
       <a class="button button--secondary" href="{escape(book["slug"])}/index.html">查看目录</a>
+      {pdf_action}
     </div>
   </div>
 </article>
@@ -1369,7 +1439,12 @@ def make_index_html(books: list[dict[str, str]]) -> str:
 """
 
 
-def write_root_files(dist_dir: Path, books: list[dict[str, str]], site_url: str) -> None:
+def write_root_files(
+    dist_dir: Path,
+    books: list[dict[str, str]],
+    site_url: str,
+    custom_domain: str,
+) -> None:
     index_html = make_index_html(books)
     root_og_relative = f"{OG_DIRNAME}/site-home.svg"
     write_og_image(
@@ -1408,6 +1483,8 @@ def write_root_files(dist_dir: Path, books: list[dict[str, str]], site_url: str)
     )
     (dist_dir / "index.html").write_text(index_html, encoding="utf-8")
     (dist_dir / ".nojekyll").write_text("", encoding="utf-8")
+    if custom_domain:
+        (dist_dir / "CNAME").write_text(custom_domain + "\n", encoding="utf-8")
     robots_body = "User-agent: *\nAllow: /\nSitemap: " + join_public_url(site_url, "sitemap.xml") + "\n"
     (dist_dir / "robots.txt").write_text(robots_body, encoding="utf-8")
 
@@ -1433,6 +1510,7 @@ def main() -> None:
     args = parse_args()
     dist_dir = Path(args.dist_dir).resolve()
     site_url = normalize_site_url(args.site_url)
+    custom_domain = args.custom_domain.strip()
 
     if dist_dir.exists():
         shutil.rmtree(dist_dir)
@@ -1449,7 +1527,7 @@ def main() -> None:
         sync_page_titles(target_dir, book)
         inject_book_social_meta(target_dir, book, site_url, dist_dir)
 
-    write_root_files(dist_dir, books, site_url)
+    write_root_files(dist_dir, books, site_url, custom_domain)
     write_sitemap(dist_dir, site_url)
 
 

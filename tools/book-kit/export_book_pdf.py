@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 import shutil
@@ -12,6 +13,12 @@ from build_pandoc_book import build_book
 
 def run(args: list[str], *, cwd: Path | None = None) -> None:
     subprocess.run(args, cwd=cwd, check=True)
+
+
+def default_fonts() -> tuple[str, str, str]:
+    if sys.platform == "darwin":
+        return ("Songti SC", "Songti SC", "Menlo")
+    return ("Noto Serif CJK SC", "Noto Serif CJK SC", "Noto Sans Mono")
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
@@ -197,6 +204,11 @@ def main() -> None:
     titlepage_tex.write_text(render_title_page(meta, cover_pdf_rel), encoding="utf-8")
     header_tex.write_text(render_header(), encoding="utf-8")
 
+    mainfont_default, cjk_mainfont_default, monofont_default = default_fonts()
+    mainfont = os.environ.get("PDF_MAINFONT", mainfont_default)
+    cjk_mainfont = os.environ.get("PDF_CJK_MAINFONT", cjk_mainfont_default)
+    monofont = os.environ.get("PDF_MONOFONT", monofont_default)
+
     run(
         [
             "pandoc",
@@ -233,11 +245,11 @@ def main() -> None:
             "-V",
             "colorlinks=true",
             "-V",
-            'mainfont=Songti SC',
+            f"mainfont={mainfont}",
             "-V",
-            'CJKmainfont=Songti SC',
+            f"CJKmainfont={cjk_mainfont}",
             "-V",
-            "monofont=Menlo",
+            f"monofont={monofont}",
             "--highlight-style=tango",
             "-o",
             str(output),

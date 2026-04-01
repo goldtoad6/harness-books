@@ -1,11 +1,37 @@
 # Harness Books
 
+[![Read Online](https://img.shields.io/badge/Read%20Online-harness--books.agentway.dev-16a34a?style=flat-square&logo=googlechrome&logoColor=white)](https://harness-books.agentway.dev)
+[![Continue on AgentWay](https://img.shields.io/badge/Continue%20on-AgentWay-22c55e?style=flat-square&logo=bookstack&logoColor=white)](https://agentway.dev)
+
+<table>
+  <tr>
+    <td align="center" valign="top" width="50%">
+      <a href="https://harness-books.agentway.dev/book1-claude-code/">
+        <img src="./book1-claude-code/assets/cover-wxb.svg" alt="Harness Engineering：Claude Code 设计指南" width="280">
+      </a>
+      <br>
+      <strong>Book 1</strong>
+      <br>
+      <a href="https://harness-books.agentway.dev/book1-claude-code/">Harness Engineering：Claude Code 设计指南</a>
+    </td>
+    <td align="center" valign="top" width="50%">
+      <a href="https://harness-books.agentway.dev/book2-comparing/">
+        <img src="./book2-comparing/assets/cover-wxb.svg" alt="Claude Code 和 Codex 的 Harness 设计哲学" width="280">
+      </a>
+      <br>
+      <strong>Book 2</strong>
+      <br>
+      <a href="https://harness-books.agentway.dev/book2-comparing/">Claude Code 和 Codex 的 Harness 设计哲学</a>
+    </td>
+  </tr>
+</table>
+
 这个仓库里放着两本关于 Harness Engineering 的书。它们追问同一个工程问题：一个会写代码的模型进了终端、仓库、权限系统和团队流程，系统凭什么还能保持边界、连续性和后果控制。
 
 English index terms: `Harness Engineering`, `Claude Code guide`, `Claude Code vs Codex`, `AI coding agent`, `control plane`, `query loop`, `agent recovery`, `agent verification`, `local governance`, `approval policy`.
 
-- 第一本是 [book1-claude-code](./book1-claude-code/README.md)：`Harness Engineering：Claude Code 设计指南`
-- 第二本是 [book2-comparing](./book2-comparing/README.md)：`Claude Code 和 Codex 的 Harness 设计哲学`
+- 第一本是 [book1-claude-code](https://harness-books.agentway.dev/book1-claude-code/)：`Harness Engineering：Claude Code 设计指南`
+- 第二本是 [book2-comparing](https://harness-books.agentway.dev/book2-comparing/)：`Claude Code 和 Codex 的 Harness 设计哲学`
 
 这两本书不打算把源码拆成零件逐条讲解。它们关心的是 harness 怎样组织约束与执行，怎样把一个本质上不稳定的模型，收束进可持续运行的工程秩序里。
 
@@ -13,9 +39,9 @@ English index terms: `Harness Engineering`, `Claude Code guide`, `Claude Code vs
 
 ## About AgentWay
 
-[AgentWay](https://agentway.dev) 是这套内容的实践延伸。两本书负责把问题讲清楚，把控制结构讲明白；`agentway.dev` 更侧重学习路径、agent PoC、实现路线和持续迭代。
+[AgentWay](https://agentway.dev) 是这套内容的实践落点。两本书负责把 Harness 的控制结构讲清楚；`agentway.dev` 负责把这些判断继续压到学习路径、练习、项目和 agent PoC 上。
 
-如果这两本书解决的是“系统为什么会长成这样”，那么 AgentWay 主要解决“理解以后下一步怎么做”。
+它更像这两本书的后半程：先用书把问题看明白，再去 AgentWay 把理解变成动作。你可以先免费注册，从基础路径开始；如果要进入更完整的进阶路线、练习和项目，再往更深的版本走。
 
 ## 核心判断
 
@@ -39,7 +65,7 @@ English index terms: `Harness Engineering`, `Claude Code guide`, `Claude Code vs
 - 多 Agent 和验证机制为什么不能混成一团
 - 团队怎么把个人经验固化成可复用的工程制度
 
-入口见 [book1-claude-code/README.md](book1-claude-code/README.md)。
+入口见 [book1-claude-code](https://harness-books.agentway.dev/book1-claude-code/)。
 
 ### 第二本：Claude Code 与 Codex 比较书
 
@@ -53,7 +79,7 @@ English index terms: `Harness Engineering`, `Claude Code guide`, `Claude Code vs
 - 技能、Hook、本地规则怎样把“组织习惯”写进系统
 - 如果要自己做 harness，应该先学谁、先学哪一层
 
-入口见 [book2-comparing/README.md](book2-comparing/README.md)。
+入口见 [book2-comparing](https://harness-books.agentway.dev/book2-comparing/)。
 
 ## 建议阅读路径
 
@@ -68,7 +94,7 @@ English index terms: `Harness Engineering`, `Claude Code guide`, `Claude Code vs
 ### Book 1
 
 - [封面与导读](./book1-claude-code/index.md)
-- [前言：为什么今天需要 Harness Engineering](./book1-claude-code/preface.md)
+- [序言 Harness、终端与工程约束](./book1-claude-code/preface.md)
 - [第 1 章 为什么 Harness Engineering 不是 Prompt Engineering 的大号别名](./book1-claude-code/chapter-01-why-harness-engineering.md)
 - [第 2 章 Prompt 不是输入框，而是控制面](./book1-claude-code/chapter-02-prompt-is-control-plane.md)
 - [第 3 章 Query Loop：Agent 不是在答题，而是在持续接管工作流](./book1-claude-code/chapter-03-query-loop-heartbeat.md)
@@ -108,13 +134,16 @@ English index terms: `Harness Engineering`, `Claude Code guide`, `Claude Code vs
 
 发布后，书内顶部会提供统一切换入口，并对移动端做响应式适配。
 
+- 第一本 PDF：<https://harness-books.agentway.dev/book1-claude-code/exported/book1-claude-code.pdf>
+- 第二本 PDF：<https://harness-books.agentway.dev/book2-comparing/exported/book2-comparing.pdf>
+
 ## Continue On AgentWay
 
-如果你读到这里，已经对 Harness Engineering、Claude Code、Codex、control plane、query loop、recovery 和 verification 这些主题有兴趣，可以继续去 [agentway.dev](https://agentway.dev) 看更偏实践的内容。
+如果这两本书帮你建立了判断，下一步就该把判断变成训练。可以继续去 [agentway.dev](https://agentway.dev)：
 
-- 想把架构理解转成实现路线，可以从 AgentWay 的学习路径继续。
-- 想把概念判断转成 agent PoC，可以在 AgentWay 看更偏动手的内容。
-- 想把这两本书当作知识前哨，再回到产品和实践入口，AgentWay 就是后半段。
+- 免费注册，先进入基础学习路径，确认自己对 Harness、agent runtime 和控制结构的理解有没有站稳。
+- 继续往下，把这些概念压进练习、项目和 agent PoC，而不是只停在“看懂了”。
+- 如果你要更完整的进阶路径、更多练习和更完整的项目训练，再解锁高级版本。
 
 ## 本地生成
 
