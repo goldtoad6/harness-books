@@ -145,8 +145,56 @@ BOOK_SWITCHER_CSS = """
   box-shadow: var(--hb-shadow-soft);
 }
 
+.book.with-site-switcher .hb-inline-pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 30px 0 18px;
+}
+
+.book.with-site-switcher .hb-inline-pager__link {
+  display: block;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(53, 41, 27, 0.10);
+  border-radius: 18px;
+  background: rgba(255, 252, 245, 0.72);
+  color: #2d2418;
+  text-decoration: none;
+  box-shadow: var(--hb-shadow-soft);
+}
+
+.book.with-site-switcher .hb-inline-pager__link:hover,
+.book.with-site-switcher .hb-inline-pager__link:focus-visible {
+  border-color: rgba(135, 89, 50, 0.28);
+  background: rgba(255, 252, 245, 0.92);
+}
+
+.book.with-site-switcher .hb-inline-pager__link--next {
+  text-align: right;
+}
+
+.book.with-site-switcher .hb-inline-pager__eyebrow {
+  display: block;
+  margin-bottom: 6px;
+  color: #875932;
+  font-family: "Avenir Next", "PingFang SC", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.book.with-site-switcher .hb-inline-pager__title {
+  display: block;
+  color: #1f1812;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 .book.with-site-switcher .hb-agentway-cta {
-  margin: 28px 0 6px;
+  margin: 0 0 6px;
   padding: 18px 18px 16px;
   border: 1px solid rgba(53, 41, 27, 0.10);
   border-radius: 22px;
@@ -462,6 +510,16 @@ BOOK_SWITCHER_CSS = """
 
   .hb-site-switcher__title {
     font-size: 12px;
+  }
+
+  .book.with-site-switcher .hb-inline-pager {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 24px 0 16px;
+  }
+
+  .book.with-site-switcher .hb-inline-pager__link--next {
+    text-align: left;
   }
 
   .book.with-site-switcher .hb-agentway-cta {
@@ -1132,8 +1190,8 @@ def build_agentway_cta(book: dict[str, str]) -> str:
             "AgentWay 和这些主题相关，但它不是这本书的下一章；如果你想把这些判断继续用于训练、项目演练和持续实践，可以再单独了解它。"
         )
     return (
-        '<aside class="hb-agentway-cta" aria-label="What AgentWay Is">'
-        '<p class="hb-agentway-cta__eyebrow">AgentWay 是什么</p>'
+        '<aside class="hb-agentway-cta" aria-label="Further Reading">'
+        '<p class="hb-agentway-cta__eyebrow">延伸阅读</p>'
         f"<h3>{escape(title)}</h3>"
         f"<p>{escape(body)}</p>"
         '<div class="hb-agentway-cta__actions">'
@@ -1144,16 +1202,77 @@ def build_agentway_cta(book: dict[str, str]) -> str:
     )
 
 
-def inject_agentway_cta(book_publish_dir: Path, book: dict[str, str]) -> None:
+def extract_navigation_target(html: str, direction: str) -> tuple[str, str] | None:
+    match = re.search(
+        rf'<a href="([^"]+)" class="navigation navigation-{direction}\s*[^"]*" aria-label="([^"]+)">',
+        html,
+    )
+    if not match:
+        return None
+    href = html_unescape(match.group(1)).strip()
+    aria_label = html_unescape(match.group(2)).strip()
+    label = aria_label.split(":", 1)[1].strip() if ":" in aria_label else aria_label
+    if not href or not label:
+        return None
+    return href, label
+
+
+def build_inline_pager(html: str) -> str:
+    links: list[str] = []
+    prev_target = extract_navigation_target(html, "prev")
+    next_target = extract_navigation_target(html, "next")
+
+    if prev_target:
+        href, label = prev_target
+        links.append(
+            '<a class="hb-inline-pager__link hb-inline-pager__link--prev" '
+            f'href="{escape(href)}">'
+            '<span class="hb-inline-pager__eyebrow">回到上一章</span>'
+            f'<span class="hb-inline-pager__title">{escape(label)}</span>'
+            "</a>"
+        )
+
+    if next_target:
+        href, label = next_target
+        links.append(
+            '<a class="hb-inline-pager__link hb-inline-pager__link--next" '
+            f'href="{escape(href)}">'
+            '<span class="hb-inline-pager__eyebrow">继续阅读下一章</span>'
+            f'<span class="hb-inline-pager__title">{escape(label)}</span>'
+            "</a>"
+        )
+
+    if not links:
+        return ""
+    return '<nav class="hb-inline-pager" aria-label="Chapter navigation">' + "".join(links) + "</nav>"
+
+
+def build_endcap(html: str, book: dict[str, str]) -> str:
+    pager = build_inline_pager(html)
     cta = build_agentway_cta(book)
+    return f'<div class="hb-endcap">{pager}{cta}</div>'
+
+
+def inject_agentway_cta(book_publish_dir: Path, book: dict[str, str]) -> None:
     for html_path in book_publish_dir.rglob("*.html"):
         if "gitbook" in html_path.parts:
             continue
         html = html_path.read_text(encoding="utf-8")
+        endcap = build_endcap(html, book)
+        if '<div class="hb-endcap">' in html:
+            html = re.sub(
+                r'<div class="hb-endcap">.*?</div>',
+                endcap,
+                html,
+                count=1,
+                flags=re.S,
+            )
+            html_path.write_text(html, encoding="utf-8")
+            continue
         if '<aside class="hb-agentway-cta"' in html:
             html = re.sub(
                 r'<aside class="hb-agentway-cta" aria-label="[^"]*">.*?</aside>',
-                cta,
+                endcap,
                 html,
                 count=1,
                 flags=re.S,
@@ -1162,7 +1281,7 @@ def inject_agentway_cta(book_publish_dir: Path, book: dict[str, str]) -> None:
             continue
         html = html.replace(
             "</section>\n                            \n    </div>\n    <div class=\"search-results\">",
-            f"</section>\n{cta}\n                            \n    </div>\n    <div class=\"search-results\">",
+            f"</section>\n{endcap}\n                            \n    </div>\n    <div class=\"search-results\">",
             1,
         )
         html_path.write_text(html, encoding="utf-8")
