@@ -1,5 +1,5 @@
 @startuml
-title Claude Code vs Codex: 本地治理、技能与多代理
+title Claude Code vs Codex: Local Governance, Skills, and Multi-Agent Work
 
 skinparam backgroundColor transparent
 skinparam dpi 135
@@ -27,7 +27,7 @@ skinparam RectangleRoundCorner 10
 
 left to right direction
 
-package "Claude Code\n现场记忆式治理" #E8DDD0 {
+package "Claude Code\nField-Memory Governance" #E8DDD0 {
   rectangle "CLAUDE.md" as cc_claude
   rectangle "SkillTool" as cc_skill
   rectangle "forkedAgent" as cc_fork
@@ -42,7 +42,7 @@ package "Claude Code\n现场记忆式治理" #E8DDD0 {
   cc_verify --> cc_runtime
 }
 
-package "Codex\n制度挂载式治理" #EFE6D8 {
+package "Codex\nInstitution-Mounted Governance" #EFE6D8 {
   rectangle "AGENTS.md" as cx_agents
   rectangle "System Skills\ninstalled to CODEX_HOME" as cx_skills
   rectangle "Skills Fingerprint /\n.system marker" as cx_fingerprint
@@ -67,19 +67,19 @@ team --> cx_agents
 team --> cx_skills
 
 note bottom of cc_runtime
-治理方式:
-- 规则进入当前会话
-- skill 常与子代理协作
-- verify 作为独立纪律
-- hook 紧贴任务现场
+Governance style:
+- rules enter the current session
+- skills often pair with subagents
+- verify is an independent discipline
+- hooks stay close to live task flow
 end note
 
 note bottom of cx_runtime
-治理方式:
-- rules / skills 更像资产
-- hook 是显式生命周期事件
-- 代理协作通过工具与线程承接
-- 本地制度更易版本化
+Governance style:
+- rules and skills behave like assets
+- hooks are explicit lifecycle events
+- agent collaboration is carried by tools and threads
+- local institutions are easier to version
 end note
 
 @enduml

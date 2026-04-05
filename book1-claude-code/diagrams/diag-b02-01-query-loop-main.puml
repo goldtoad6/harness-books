@@ -1,5 +1,5 @@
 @startuml
-title Query Loop 主循环
+title Query Loop Main Cycle
 
 skinparam backgroundColor #F7F1E6
 skinparam linetype ortho
@@ -50,11 +50,11 @@ stop_hooks --> terminal
 error_box --> terminal
 
 note right
-主循环负责：
-- 输入治理
-- 模型调用
-- 工具回填
-- 下一轮重入
+The main loop owns:
+- input governance
+- model invocation
+- tool-result reinjection
+- next-turn re-entry
 end note
 
 @enduml

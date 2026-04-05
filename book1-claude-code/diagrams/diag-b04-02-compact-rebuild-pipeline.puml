@@ -44,10 +44,11 @@ boundary --> reinject
 reinject --> post
 
 note right of post
-compact 的目标不是
-做一条 summary，
-而是重建下一轮
-还能继续工作的语义底座。
+The goal of compact is not
+to produce one neat summary.
+It is to rebuild the semantic
+floor that lets the next turn
+keep working.
 end note
 
 @enduml

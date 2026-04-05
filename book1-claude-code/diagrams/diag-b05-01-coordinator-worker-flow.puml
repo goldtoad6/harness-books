@@ -32,7 +32,7 @@ participant "Research Worker" as research
 participant "Implementation Worker" as impl
 participant "Runtime / Hooks /\nTask System" as runtime
 
-user -> coord : 提出目标
+user -> coord : submit goal
 coord -> runtime : Spawn research workers
 runtime -> research : isolated context
 research --> runtime : findings
@@ -42,11 +42,12 @@ coord -> runtime : Spawn implementation worker
 runtime -> impl : isolated subagent
 impl --> runtime : code changes + self-check
 runtime --> coord : implementation result
-coord --> user : 综合结论 / 风险 / 下一步
+coord --> user : synthesis / risks / next steps
 
 note right of coord
-Coordinator 负责综合与分发，
-不只是转发 worker 产出。
+The coordinator owns synthesis
+and dispatch. It does more
+than relay worker output.
 end note
 
 @enduml

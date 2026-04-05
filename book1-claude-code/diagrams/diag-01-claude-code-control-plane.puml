@@ -1,5 +1,5 @@
 @startuml
-title Claude Code 总体控制面
+title Claude Code Overall Control Plane
 
 skinparam backgroundColor #F7F1E6
 skinparam linetype ortho
@@ -25,13 +25,13 @@ skinparam RectangleRoundCorner 10
 
 left to right direction
 
-package "用户与组织输入" #F3ECDD {
+package "User and Organizational Inputs" #F3ECDD {
   actor User as user
   rectangle "Team Policy" as team_policy
   rectangle "Repo Rules" as repo_rules
 }
 
-package "控制面" #E8DDD0 {
+package "Control Plane" #E8DDD0 {
   rectangle "System Prompt Assembly" as system_prompt
   rectangle "CLAUDE.md / Rules" as claude_md
   rectangle "Memory\nPersistent + Session" as memory
@@ -39,7 +39,7 @@ package "控制面" #E8DDD0 {
   rectangle "Hooks" as hooks
 }
 
-package "执行循环" #EFE6D8 {
+package "Execution Loop" #EFE6D8 {
   rectangle "Query Loop" as query_loop
   rectangle "Input Governance" as input_governance
   rectangle "Model Streaming" as model_streaming
@@ -48,22 +48,22 @@ package "执行循环" #EFE6D8 {
   rectangle "Continuation / Stop" as continuation
 }
 
-package "外部能力" #F3E6CD {
+package "External Capabilities" #F3E6CD {
   rectangle "Filesystem" as fs
   rectangle "Bash / Git" as bash_git
   rectangle "MCP / Network" as mcp_network
 }
 
-package "持久化与观测" #EFE6D8 {
+package "Persistence and Observability" #EFE6D8 {
   rectangle "Transcript" as transcript
   rectangle "Task Output" as task_output
   rectangle "Analytics" as analytics
   rectangle "Compact Boundary" as compact_boundary
 }
 
-user --> query_loop : 目标 / 反馈 / 中断
-team_policy --> system_prompt : 团队约束
-repo_rules --> claude_md : 仓库级规则
+user --> query_loop : goals / feedback / interrupts
+team_policy --> system_prompt : team constraints
+repo_rules --> claude_md : repo-level rules
 
 system_prompt --> query_loop
 claude_md --> query_loop
@@ -76,7 +76,7 @@ input_governance --> model_streaming
 model_streaming --> tool_orchestration
 tool_orchestration --> recovery
 recovery --> continuation
-continuation --> query_loop : 下一轮 / 结束
+continuation --> query_loop : next turn / stop
 
 tool_orchestration --> fs
 tool_orchestration --> bash_git
@@ -86,16 +86,17 @@ query_loop --> transcript
 query_loop --> task_output
 query_loop --> analytics
 query_loop --> compact_boundary
-compact_boundary --> query_loop : 压缩后重入
+compact_boundary --> query_loop : re-enter after compact
 
 note bottom of query_loop
-模型不是系统中心
-它只是受控执行循环中的
-一个不稳定部件
+The model is not the center
+of the system. It is only
+one unstable component inside
+a controlled execution loop.
 end note
 
 note right of recovery
-恢复路径包括:
+Recovery paths include:
 - prompt too long
 - max output tokens
 - interrupt

@@ -56,15 +56,17 @@ endif
 stop
 
 note right
-这里处理的是流式工具状态：
+This layer handles streaming
+tool states:
 - queued
 - executing
 - completed
 - yielded
 
-并把中断、拒绝、
-sibling failure 收成
-受控结束语义。
+It also folds interrupts,
+denials, and sibling failure
+into controlled termination
+semantics.
 end note
 
 @enduml

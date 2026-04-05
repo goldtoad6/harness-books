@@ -52,10 +52,12 @@ package "Budget axis" #F3E6CD {
 messages -[#8C2721]-> w1 : consumed against
 
 note bottom of messages
-治理重点不在“消息条数”，
-而在不同来源的规则、
-记忆和对话如何一起
-占用上下文预算。
+The point of governance is not
+"how many messages exist,"
+but how rules, memory, and
+conversation from different
+sources consume the same
+context budget together.
 end note
 
 @enduml

@@ -1,5 +1,5 @@
 @startuml
-title Claude Code vs Codex: 连续性与状态承接
+title Claude Code vs Codex: Continuity and State Handoff
 
 skinparam backgroundColor transparent
 skinparam dpi 135
@@ -27,7 +27,7 @@ skinparam RectangleRoundCorner 10
 
 left to right direction
 
-package "Claude Code\n连续性住在 Query Loop" #E8DDD0 {
+package "Claude Code\nContinuity Lives in the Query Loop" #E8DDD0 {
   rectangle "Messages" as cc_messages
   rectangle "Tool Use Context" as cc_tool_ctx
   rectangle "AutoCompact Tracking" as cc_compact
@@ -45,7 +45,7 @@ package "Claude Code\n连续性住在 Query Loop" #E8DDD0 {
   cc_continue --> cc_loop : next turn
 }
 
-package "Codex\n连续性住在线程与记录层" #EFE6D8 {
+package "Codex\nContinuity Lives in Threads and Records" #EFE6D8 {
   rectangle "Thread" as cx_thread
   rectangle "ThreadManager" as cx_manager
   rectangle "RolloutRecorder" as cx_rollout
@@ -64,29 +64,31 @@ package "Codex\n连续性住在线程与记录层" #EFE6D8 {
 
 cc_continue -[hidden]down-> cx_thread
 
-rectangle "中断 / 恢复 / 压缩" as shared_interrupt #F3E6CD
+rectangle "Interrupts / Recovery / Compact" as shared_interrupt #F3E6CD
 
 shared_interrupt --> cc_loop : reactive compact\nmax output recovery
 shared_interrupt --> cx_turn : thread resume\nstate-backed continuity
 
 note bottom of cc_loop
-主循环直接持有:
-- 当前消息
-- 工具上下文
-- compact 状态
-- 恢复分支
+The main loop directly owns:
+- current messages
+- tool context
+- compact state
+- recovery branches
 end note
 
 note right of cx_thread
-显式 thread id
-使连续性不只是
-"循环还在继续"
-而是可索引会话事实
+An explicit thread id means
+continuity is not merely
+"the loop is still running."
+It becomes indexed session fact.
 end note
 
 note right of cx_rollout
-持续写入 rollout / state db
-history / memories pipeline
+Continuously writes into
+rollout and state DB,
+plus history and memory
+pipelines.
 end note
 
 @enduml

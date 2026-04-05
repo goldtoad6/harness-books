@@ -50,9 +50,10 @@ partition --> run_serial
 replay_modifiers -[#8C2721]-> immediate_modify : same semantic effect
 
 note bottom of replay_modifiers
-并发只提升吞吐，
-上下文因果顺序
-仍按原 block 回放。
+Concurrency improves throughput only.
+Contextual cause-and-effect order
+is still replayed according to
+the original block sequence.
 end note
 
 @enduml

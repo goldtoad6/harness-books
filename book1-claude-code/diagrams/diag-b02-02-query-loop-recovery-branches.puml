@@ -1,5 +1,5 @@
 @startuml
-title Query Loop 恢复分支
+title Query Loop Recovery Branches
 
 skinparam backgroundColor #F7F1E6
 skinparam linetype ortho
@@ -68,9 +68,9 @@ endif
 stop
 
 note right
-恢复不是外挂流程，
-而是主循环内部的
-受控旁路。
+Recovery is not an external add-on.
+It is a controlled side path
+inside the main loop itself.
 end note
 
 @enduml

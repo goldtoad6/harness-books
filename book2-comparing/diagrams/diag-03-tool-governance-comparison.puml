@@ -1,5 +1,5 @@
 @startuml
-title Claude Code vs Codex: 工具治理与执行边界
+title Claude Code vs Codex: Tool Governance and Execution Boundaries
 
 skinparam backgroundColor transparent
 skinparam dpi 135
@@ -27,7 +27,7 @@ skinparam RectangleRoundCorner 10
 
 left to right direction
 
-package "Claude Code\n运行时调度治理" #E8DDD0 {
+package "Claude Code\nRuntime Scheduling Governance" #E8DDD0 {
   rectangle "tool_use blocks" as cc_blocks
   rectangle "partitionToolCalls()" as cc_partition
   rectangle "Concurrency-safe batch" as cc_concurrent
@@ -45,7 +45,7 @@ package "Claude Code\n运行时调度治理" #E8DDD0 {
   cc_bash --> cc_permission
 }
 
-package "Codex\nSchema + Policy 治理" #EFE6D8 {
+package "Codex\nSchema + Policy Governance" #EFE6D8 {
   rectangle "ToolSpec / JsonSchema" as cx_schema
   rectangle "exec_command / shell /\nrequest_permissions" as cx_local_tools
   rectangle "Approval Parameters" as cx_approval
@@ -64,23 +64,23 @@ cc_stream -[hidden]down-> cx_runtime
 
 rectangle "External World" as world #F3E6CD
 
-cc_stream --> world : 受运行时编排后执行
-cx_runtime --> world : 受 schema + policy 后执行
+cc_stream --> world : executed after runtime orchestration
+cx_runtime --> world : executed after schema + policy checks
 
 note bottom of cc_stream
-重点:
-- 并发安全判定
-- 上下文回放顺序
-- 中断收尾
-- 高风险工具治理
+Key concerns:
+- concurrency safety decisions
+- context replay order
+- interrupt cleanup
+- governance for high-risk tools
 end note
 
 note bottom of cx_policy
-重点:
-- 权限显式入参
-- request_permissions 工具
+Key concerns:
+- explicit permission parameters
+- request_permissions tool
 - policy language
-- 执行边界配置化
+- configurable execution boundaries
 end note
 
 @enduml

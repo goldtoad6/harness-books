@@ -58,11 +58,12 @@ verification result
 end note
 
 note bottom of verify
-verification 必须与 implementation
-分离。否则系统会把
-“我改完了”
-误当成
-“它已经正确了”。
+Verification must remain separate
+from implementation. Otherwise
+the system mistakes
+"I finished changing it"
+for
+"it is now correct."
 end note
 
 @enduml

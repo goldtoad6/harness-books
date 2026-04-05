@@ -1,5 +1,5 @@
 @startuml
-title Claude Code vs Codex: 控制面对比
+title Claude Code vs Codex: Control Plane Comparison
 
 skinparam backgroundColor transparent
 skinparam dpi 135
@@ -27,13 +27,13 @@ skinparam RectangleRoundCorner 10
 
 left to right direction
 
-package "共同输入" #F3ECDD {
+package "Shared Inputs" #F3ECDD {
   actor User as user
   rectangle "Repo / Team Rules" as shared_rules
   rectangle "Local Context" as local_context
 }
 
-package "Claude Code\n动态拼装控制面" #E8DDD0 {
+package "Claude Code\nDynamically Assembled Control Plane" #E8DDD0 {
   rectangle "Default System Prompt" as cc_default
   rectangle "Append / Agent Prompt" as cc_append
   rectangle "CLAUDE.md" as cc_claude
@@ -50,7 +50,7 @@ package "Claude Code\n动态拼装控制面" #E8DDD0 {
   cc_assembly --> cc_loop
 }
 
-package "Codex\n结构化控制面" #EFE6D8 {
+package "Codex\nStructured Control Plane" #EFE6D8 {
   rectangle "AGENTS.md Fragment" as cx_agents
   rectangle "Skill Fragment" as cx_skill
   rectangle "Tool Schema" as cx_tools
@@ -67,7 +67,7 @@ package "Codex\n结构化控制面" #EFE6D8 {
   cx_instr --> cx_runtime
 }
 
-user --> cc_loop : 目标 / 中断 / 反馈
+user --> cc_loop : goals / interrupts / feedback
 user --> cx_runtime : input / turn
 shared_rules --> cc_claude
 shared_rules --> cx_agents
@@ -77,27 +77,28 @@ local_context --> cx_thread
 cc_loop -[hidden]down-> cx_runtime
 
 note bottom of cc_assembly
-先拼装成运行时 prompt
-再进入主循环
+First assemble a runtime prompt,
+then enter the main loop.
 end note
 
 note bottom of cx_instr
-先格式化为 fragment / schema
-再进入线程执行
+First format as fragments
+and schemas, then enter
+thread execution.
 end note
 
 note right of cc_loop
-核心气质:
-- 现场动态装配
-- loop 驱动
-- 规则跟随会话进入
+Core character:
+- dynamic assembly in the field
+- loop-driven behavior
+- rules enter through the session
 end note
 
 note right of cx_runtime
-核心气质:
-- 结构化注入
-- 显式参数与片段
-- turn / thread 驱动
+Core character:
+- structured injection
+- explicit parameters and fragments
+- turn / thread driven
 end note
 
 @enduml
