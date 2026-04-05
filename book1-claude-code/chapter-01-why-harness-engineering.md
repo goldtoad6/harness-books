@@ -2,7 +2,7 @@
 
 ## 1.1 问题在于让模型别乱来
 
-这些年，人们很喜欢谈智能体。这个词常常带着轻快的预期，仿佛只要模型会写几段代码、会调几个工具，就可以像见习工程师一样在终端里独立工作。可终端和文件系统都带有明确后果。一个会说话的概率分布，一旦能接触 shell、Git、网络和本地文件，问题就从“回答得不够好”变成“执行把东西改坏了”。
+这些年，人们很喜欢谈智能体。这个词常常带着轻快的预期，仿佛只要模型会写几段代码、会调几个工具，就可以像见习工程师一样在终端里独立工作。可终端和文件系统都带有明确后果。一个会说话的概率分布，一旦能接触 shell、Git、网络和本地文件，问题就从”回答得不够好”变成”执行造成实际破坏”。
 
 所以问题的重点，一直是怎样把它约束成一个可管理的系统。所谓 Harness Engineering，讨论的就是这件事。Harness 是一整套制度化的控制平面，用来处理一个很现实的问题：模型并不天然值得信任。
 
@@ -14,11 +14,13 @@
 
 这一点从 system prompt 的组织方式就能看出来。
 
-在 `src/constants/prompts.ts:175` 开始，系统先定义身份和总任务；在 `src/constants/prompts.ts:186` 开始，补上关于工具、权限、系统提醒和上下文压缩的系统级说明；在 `src/constants/prompts.ts:199` 开始，再补上做任务时的工程约束，比如不要越权改动、不要把验证说成已经完成、不要为了省事发明抽象。
+- 在 `src/constants/prompts.ts:175` 开始，系统先定义身份和总任务。
+- 在 `src/constants/prompts.ts:186` 开始，补上关于工具、权限、系统提醒和上下文压缩的系统级说明。
+- 在 `src/constants/prompts.ts:199` 开始，再补上做任务时的工程约束，比如不要越权改动、不要把验证说成已经完成、不要为了省事发明抽象。
 
 这里值得停一下。很多人谈 prompt，还停留在“你是一个什么样的助手”这种修辞层面。Claude Code 在实现上把 prompt 放进了运行时控制结构里，这些文字用来规定执行边界、失败行为和报告责任。
 
-更重要的是，这个 prompt 采用分段拼装方式。在 `src/constants/prompts.ts:444` 的 `getSystemPrompt()` 里，静态部分和动态部分被明确拆开；memory、language、output style、MCP instructions、scratchpad 等内容按段注入。到了 `src/utils/systemPrompt.ts:28`，系统又把默认 prompt、自定义 prompt、agent prompt 和 append prompt 组织成一套优先级规则。
+更重要的是，这个 prompt 采用分段拼装方式。在 `src/constants/prompts.ts:444` 的 `getSystemPrompt()` 里，静态部分和动态部分被明确拆开，memory、language、output style、MCP instructions、scratchpad 等内容按段注入。到了 `src/utils/systemPrompt.ts:28`，系统又把默认 prompt、自定义 prompt、agent prompt 和 append prompt 组织成一套优先级规则。
 
 这说明了一个朴素的工程事实：一个真正可用的代理系统，不能依赖一段“万能提示词”解决所有问题。它必须把控制拆成层，把层次拆成职责。否则，新增提醒和禁令很快就会互相冲突，系统行为也会变得难以预测。
 
@@ -28,9 +30,16 @@
 
 Claude Code 的核心不在某个单独的 API 调用，而在 `src/query.ts:219` 开始的 `query()`，以及 `src/query.ts:241` 开始的 `queryLoop()`。这段实现里最重要的一点，是它明确承认代理系统依赖带状态的多轮执行。
 
-在 `src/query.ts:268`，系统把 `messages`、`toolUseContext`、`autoCompactTracking`、`maxOutputTokensRecoveryCount`、`hasAttemptedReactiveCompact`、`pendingToolUseSummary`、`turnCount`、`transition` 等内容放进同一个跨迭代状态里。一个会话系统一旦这样设计，就等于正式承认上一轮留下的问题会进入下一轮，需要继续处理。
+在 `src/query.ts:268`，系统把 `messages`、`toolUseContext`、`autoCompactTracking`、`maxOutputTokensRecoveryCount`、`hasAttemptedReactiveCompact`、`pendingToolUseSummary`、`turnCount`、`transition` 等内容放进同一个跨迭代状态里。一个会话系统一旦这样设计，就等于正式承认：上一轮留下的问题会进入下一轮，系统必须有能力继续处理。
 
-这是 Harness 思维的核心。真正的问题在于系统能不能在连续多轮里保持行为一致：有没有预算概念，有没有恢复概念，有没有上下文膨胀后的自救机制，有没有在工具调用失败后继续推进任务的能力。缺少这些结构，所谓智能体就只是一个不稳定的执行者。
+这是 Harness 思维的核心。真正的问题在于系统能不能在连续多轮里保持行为一致：
+
+- 有没有预算概念
+- 有没有恢复概念
+- 有没有上下文膨胀后的自救机制
+- 有没有在工具调用失败后继续推进任务的能力
+
+缺少这些结构，所谓智能体就只是一个不稳定的执行者。
 
 在 `src/query.ts:365` 往后，这个循环还会在每轮调用前处理消息裁剪、tool result budget、history snip、microcompact、context collapse、autocompact 等内容。实现细节虽然很多，但共同指向一点：Claude Code 在调用发生前就尽量把控制权收回到运行时一侧。
 
@@ -60,7 +69,7 @@ Harness Engineering 的一个重要原则，就是把高风险能力包装成高
 
 ## 1.6 第五层 Harness：错误属于主路径的一部分
 
-很多软件把失败路径看成例外，把成功路径看成正文。代理系统不能这样做。因为代理系统的失败不是偶发性的，它是一种稳定存在。模型会超 token，会触发 `prompt too long`，会撞上 `max_output_tokens`，会遇到工具拒绝、用户打断、hook 阻塞和 API 重试。要是这些东西都只在最后用几个 `catch` 打发一下，那系统表面上在运行，实际上只是不断把麻烦往后滚。
+很多软件把失败路径看成例外，把成功路径看成正文。代理系统不能这样做。因为代理系统的失败不是偶发性的，它是一种稳定存在。模型会超 token，会触发 `prompt too long`，会撞上 `max_output_tokens`，还会遇到工具拒绝、用户打断、hook 阻塞、API 重试等各种中断。要是这些情况都只在最后用几个 `catch` 打发一下，那系统表面上在运行，实际上只是不断把麻烦往后滚。
 
 Claude Code 在 query loop 里没有这样处理。光看 `src/query.ts:453` 往后关于 autocompact 的处理，以及 `src/query.ts:592` 往后对上下文上限和阻断逻辑的注释，就能看出它把失败当作会持续发生的结构性条件来处理。
 

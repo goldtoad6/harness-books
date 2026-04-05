@@ -8,9 +8,9 @@
 
 Claude Code 和 Codex 的共同点在于，它们都不这么看。它们都把面向模型的指令，当成行为控制的一部分。只是实现方式不同。
 
-Claude Code 采用层层拼装。`constants/prompts.ts`、`utils/systemPrompt.ts`、`claudemd.ts`、memory 与 output style 等内容，会按运行时条件注入到 system prompt 里。这里最重要的是分层拼装逻辑，而不只是文案本身。真正起作用的，是多个来源在同一控制面里如何排优先级、如何避免互相打架。
+Claude Code 采用层层拼装。`constants/prompts.ts`、`utils/systemPrompt.ts`、`claudemd.ts`、memory 与 output style 等内容，会按运行时条件注入到 system prompt 里。这里最重要的不是文案本身，而是分层拼装逻辑——多个来源在同一控制面里如何排优先级、如何避免互相打架。
 
-Codex 更接近结构化片段。`instructions/src/fragment.rs` 里定义了 `AGENTS.md` 和 `skill` 的 fragment 标记；`user_instructions.rs` 则把用户指令序列化成带目录和边界标记的消息。这意味着 Codex 并不把 instruction 当成一块随意串接的自然语言，而是把它当成“有开始、有结束、有来源类型”的上下文单元。
+Codex 更接近结构化片段。`instructions/src/fragment.rs` 里定义了 `AGENTS.md` 和 `skill` 的 fragment 标记；`user_instructions.rs` 则把用户指令序列化成带目录和边界标记的消息。换句话说，Codex 并不把 instruction 当成一块随意串接的自然语言，而是当成”有开始、有结束、有来源类型”的上下文单元。
 
 这两种做法都有效，但透露出不同的系统性格。
 

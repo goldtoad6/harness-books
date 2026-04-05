@@ -4,7 +4,7 @@
 
 很多 AI 工具在个人手里看着很灵。一个熟练用户知道什么时候该补上下文，什么时候该盯着它别乱动，什么时候一句“不许碰这个目录”就能让它老实一会儿。于是大家很容易产生一个错觉：既然高手已经能把它用顺，那团队推广不过是多写点经验文档。
 
-事实通常不是这样。个人技巧之所以有效，往往恰好因为它依赖个人持续盯防、个人背景知识和个人临场判断。团队一旦接手，问题就变了。你不能再假定每个人都知道哪些命令其实危险，哪些 memory 已经过期，哪些 skill 会把任务 fork 出去，哪些 approval 可以省，哪些一步都不能省。
+事实通常不是这样。个人技巧之所以有效，往往恰恰因为它依赖个人持续盯防、个人背景知识和个人临场判断。团队一旦接手，问题就变了。你不能再假定每个人都知道哪些命令其实危险，哪些 memory 已经过期，哪些 skill 会把任务 fork 出去，哪些 approval 可以省，哪些一步都不能省。
 
 所以，团队落地的关键是把一部分原本靠高手脑内维持的秩序，写成系统级制度。Claude Code 的源码之所以值得参考，是因为它已经把不少“高手经验”硬化成了加载顺序、权限语义、hook 生命周期和 skill 执行边界。
 
@@ -56,7 +56,13 @@ Claude Code 整套权限机制，从 `useCanUseTool.tsx` 到 `PermissionResult.t
 - 访问 MCP
 - 持久写 memory
 
-那么每一步都同时是技术动作和责任动作。谁批准的，为什么可以自动过，哪些场景必须 ask，哪些规则能被 hook 覆盖，哪些绝对不能，这些都必须有制度。
+那么每一步都同时是技术动作和责任动作。团队必须对以下问题有明确制度：
+
+- 谁批准的
+- 为什么可以自动过
+- 哪些场景必须 ask
+- 哪些规则能被 hook 覆盖
+- 哪些绝对不能
 
 `hooksConfigManager.ts` 里甚至给 `PermissionDenied`、`PreToolUse`、`UserPromptSubmit`、`Notification` 这些事件都预留了结构化 hook 入口。你不必把它们全用上，但这种设计已经说明：approval 在 Claude Code 里是一套可插桩、可观测、可扩展的治理链，不只是一个 UI 弹窗。
 
@@ -104,9 +110,15 @@ Claude Code 的很多地方都在抵抗这种滑坡。前面说过 coordinator m
 
 ## 8.7 观测与审计说明，制度落地的关键是留下可复盘轨迹
 
-个人使用代理时，很多错误都还能靠记忆和直觉补洞。团队里不行。团队真正需要的是：事情出了以后，能不能追出这一步为什么发生。
+个人使用代理时，很多错误都还能靠记忆和直觉补洞。团队里不行。团队真正需要的是：事情出错以后，能不能追出这一步为什么发生。
 
-Claude Code 的实现里，日志、telemetry、task output、transcript path、hook event、agent notification 这些东西虽然分散，但合起来是在做同一件事：给系统留下可复盘轨迹。skill 会记录 invocation，forked agent 会记录 usage，subagent stop hook 能拿到 transcript path，task 系统会记录状态变化和输出文件，compact boundary 会标记上下文重写点。
+Claude Code 的实现里，日志、telemetry、task output、transcript path、hook event、agent notification 这些东西虽然分散，但合起来是在做同一件事：给系统留下可复盘轨迹。
+
+- skill 会记录 invocation
+- forked agent 会记录 usage
+- subagent stop hook 能拿到 transcript path
+- task 系统会记录状态变化和输出文件
+- compact boundary 会标记上下文重写点
 
 这说明团队落地的一个基本原则：不要只部署能力，还要部署解释能力。否则团队很快会遇到一种极其尴尬的场景：大家都知道代理大概做了什么，但没人能准确说出它为什么那么做、谁允许它这么做、它究竟在哪一步开始偏离。
 
