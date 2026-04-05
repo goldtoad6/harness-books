@@ -1121,24 +1121,24 @@ def inject_switcher(
 
 
 def build_agentway_cta(book: dict[str, str]) -> str:
-    title = "先注册，再把书里的判断落成练习、路径和项目。"
+    title = "这本书可以独立阅读，AgentWay 是一个独立的实践平台。"
     body = (
-        "这些书帮你看清 Harness 的骨架。AgentWay 负责把它接成可执行学习路径："
-        "先免费注册，拿到基础 track 与进度记录；准备动手做练习、flashcards、capstone 和进阶专题时，再升级高级版。"
+        "Harness Books 提供的是完整公开内容，重点是把 Harness 的控制结构与判断讲清楚。"
+        "AgentWay 和这些主题相关，但它不是本书的后续章节；如果你想把这些方法继续用于训练、项目演练和持续实践，可以再单独了解它。"
     )
     if book["slug"] == "book2-comparing":
         body = (
-            "如果你已经看清 Claude Code 与 Codex 的分歧，下一步就该选路并动手。"
-            "AgentWay 会把这些判断接进学习路径、练习和 capstone：先免费注册保留进度，要解锁更深的 track 和专题，再升级高级版。"
+            "这本比较书已经把 Claude Code 与 Codex 的关键分歧完整展开。"
+            "AgentWay 和这些主题相关，但它不是这本书的下一章；如果你想把这些判断继续用于训练、项目演练和持续实践，可以再单独了解它。"
         )
     return (
-        '<aside class="hb-agentway-cta" aria-label="Continue on AgentWay">'
-        '<p class="hb-agentway-cta__eyebrow">Continue On AgentWay</p>'
+        '<aside class="hb-agentway-cta" aria-label="What AgentWay Is">'
+        '<p class="hb-agentway-cta__eyebrow">AgentWay 是什么</p>'
         f"<h3>{escape(title)}</h3>"
         f"<p>{escape(body)}</p>"
         '<div class="hb-agentway-cta__actions">'
-        '<a class="hb-agentway-cta__link hb-agentway-cta__link--primary" href="https://agentway.dev/zh/auth">免费注册</a>'
-        '<a class="hb-agentway-cta__link" href="https://agentway.dev/zh/pricing">解锁进阶路径</a>'
+        '<a class="hb-agentway-cta__link hb-agentway-cta__link--primary" href="https://agentway.dev/zh">了解 AgentWay</a>'
+        '<a class="hb-agentway-cta__link" href="https://agentway.dev/zh/pricing">了解适用场景</a>'
         "</div>"
         "</aside>"
     )
@@ -1151,6 +1151,14 @@ def inject_agentway_cta(book_publish_dir: Path, book: dict[str, str]) -> None:
             continue
         html = html_path.read_text(encoding="utf-8")
         if '<aside class="hb-agentway-cta"' in html:
+            html = re.sub(
+                r'<aside class="hb-agentway-cta" aria-label="[^"]*">.*?</aside>',
+                cta,
+                html,
+                count=1,
+                flags=re.S,
+            )
+            html_path.write_text(html, encoding="utf-8")
             continue
         html = html.replace(
             "</section>\n                            \n    </div>\n    <div class=\"search-results\">",
@@ -1432,15 +1440,15 @@ def make_index_html(books: list[dict[str, str]], repository_url: str) -> str:
         <p>这两本书覆盖 Claude Code guide、Claude Code vs Codex、AI coding agent architecture、agent recovery、agent verification、approval policy 和 context governance 等核心主题。</p>
       </article>
       <article class="seo-block">
-        <h3>Continue On AgentWay</h3>
-        <p>这两本书讲清楚 Harness 的判断，AgentWay 负责把判断变成学习路径。先免费注册，拿到基础 track、进度记录和入门内容；准备做练习、flashcards、capstone 与进阶专题时，再升级高级版。</p>
+        <h3>AgentWay 是什么</h3>
+        <p>Harness Books 是这两本书的官网，本身就提供完整公开内容。AgentWay 是相关但独立的实践平台，不是本网站的后续章节；如果你想把书里的方法继续用于训练、项目演练和持续实践，可以再单独了解它。</p>
         <div class="seo-block__actions">
-          <a class="button button--primary" href="https://agentway.dev/zh/auth">免费注册</a>
-          <a class="button button--secondary" href="https://agentway.dev/zh/pricing">解锁进阶路径</a>
+          <a class="button button--primary" href="https://agentway.dev/zh">了解 AgentWay</a>
+          <a class="button button--secondary" href="https://agentway.dev/zh/pricing">了解适用场景</a>
         </div>
       </article>
     </section>
-    <p class="footer-note">这是这两本 Harness 工程书的官网。桌面端可以在书内直接切换，移动端会自动调整为更适合触屏阅读的纵向导航。</p>
+    <p class="footer-note">这是这两本 Harness 工程书的官网，不需要注册也可以完整阅读。桌面端可以在书内直接切换，移动端会自动调整为更适合触屏阅读的纵向导航。</p>
   </main>
 </body>
 </html>
