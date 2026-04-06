@@ -112,7 +112,7 @@ A good third harness should not average the two. It should distinguish:
 - which rules must be written down first
 - which judgments can remain in runtime
 - which state must persist
-- which experience only needs to survive inside session memory
+- which experience only needs to be retained temporarily inside session memory
 
 ## 8.5 A practical order of operations for later builders
 
@@ -130,7 +130,7 @@ This sequence is not glamorous, but it roughly follows the order in which incide
 
 This chapter only wants to leave one plain sentence behind:
 
-> Learn from Claude Code mainly to understand how a system survives on site; learn from Codex mainly to understand how a system sustains order over time inside an organization.
+> Learn from Claude Code mainly to understand how a system stays stable on site; learn from Codex mainly to understand how a system sustains order over time inside an organization.
 
 Teams that learn only the first tend to become rich in experience and poor in institution.
 

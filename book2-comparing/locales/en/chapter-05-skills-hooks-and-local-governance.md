@@ -68,7 +68,7 @@ Codex's team feel is like a newcomer with strong institutional instincts: first 
 
 This difference matters most when an organization tries to reproduce itself.
 
-If a system relies mainly on injected field experience, it adapts faster to a new repository and survives more easily in dense local context. But when it spreads to many teams, it usually requires extra editorial work, otherwise everyone writes their own `CLAUDE.md`, invents their own skills, and the organization starts printing its own textbooks by province.
+If a system relies mainly on injected field experience, it adapts faster to a new repository and remains effective more easily in dense local context. But when it spreads to many teams, it usually requires extra editorial work, otherwise everyone writes their own `CLAUDE.md`, invents their own skills, and the organization starts printing its own textbooks by province.
 
 If a system relies mainly on structured injection and lifecycle mounting, it has greater expansion potential. Rules are easier to distribute consistently, version, and audit. The price is learning cost: the team must first accept more explicit institution.
 

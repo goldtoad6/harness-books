@@ -139,4 +139,4 @@ Portable engineering principles from this:
 - Compact is a primary path, not an emergency side path
 - Post-compact context must preserve runtime semantics, not merely language surface
 
-Next chapter asks what happens when this governance system meets hard limits: prompt too long, max output tokens, hook dead loops, and competing recovery branches. That is where you can finally tell whether a system is "hoping nothing breaks" or "designed to survive breakage."
+Next chapter asks what happens when this governance system meets hard limits: prompt too long, max output tokens, hook dead loops, and competing recovery branches. That is where you can finally tell whether a system is "hoping nothing breaks" or "designed to keep operating after breakage."

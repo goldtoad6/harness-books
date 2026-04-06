@@ -29,7 +29,7 @@ Book One has a stable throughline and can be compressed into nine judgments.
 
 If you read only Book One, you get a strong impression: Claude Code's systemic character is runtime governance. It first cares about:
 
-- how the session keeps living,
+- how the session keeps running,
 - how tools avoid trouble,
 - how recovery avoids dead loops,
 - and how verification avoids ritualism.

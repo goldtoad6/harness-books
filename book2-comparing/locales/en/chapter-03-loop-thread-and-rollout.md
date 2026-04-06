@@ -34,7 +34,7 @@ That means Claude Code answers the question "how does an agent stay alive?" in r
 
 Its advantage is very concrete. Much of the real trouble in sessions happens exactly inside the loop: tool-return ordering, abrupt truncation of model output, prompt-too-long events, history snips, microcompact, and user interjections. Claude Code does not avoid these issues. It treats them as legitimate states inside the loop.
 
-That gives the design a rough engineering texture. It is not always elegant, but it often survives.
+That gives the design a rough engineering texture. It is not always elegant, but it is often more robust.
 
 ## 3.3 Codex: continuity is split across thread, rollout, and state bridges
 
@@ -84,7 +84,7 @@ In plain language:
 - Claude Code is closer to an emergency crew on site
 - Codex is closer to a dispatch center with archives
 
-Both matter. The former is better at surviving. The latter is better at explaining how it survived.
+Both matter. The former is better at keeping execution going. The latter is better at explaining how that continuity is maintained.
 
 ## 3.6 Different effects on product and team interfaces
 

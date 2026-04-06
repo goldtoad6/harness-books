@@ -63,7 +63,7 @@ Signals that you are closer to Claude Code:
 
 - you care most about query loop, tool orchestration, interrupts, compaction, and recovery
 - you are good at getting rules into the live session quickly
-- you care primarily about how an agent survives inside complex tasks
+- you care primarily about how an agent keeps running inside complex tasks
 
 Signals that you are closer to Codex:
 

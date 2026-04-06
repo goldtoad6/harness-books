@@ -10,7 +10,7 @@ In the first volume I treated Claude Code as a specimen and extracted the genera
 
 Codex is worth comparing precisely because it is not a clone. A glance at its `core/src/lib.rs` shows a deliberate program: threads, rollouts, state bridges, instructions, skills, hooks, sandboxing, exec policy, tools—each one composed into an explicit module. The ambition is to make the control layer composable, serializable, and policy-aware instead of hiding it inside a bowl of runtime intuition.
 
-Claude Code, by contrast, feels like something grown under the pressure of its runtime loop. Look at `src/query.ts` and the surrounding compacting, tool orchestration, permission handling, interrupts, and recovery logic. Most of its magic answers the question “how does this round hand off safely to the next round?” The harness is first about staying alive; once continuity is stable, then one can polish the rules between phases.
+Claude Code, by contrast, feels like something grown under the pressure of its runtime loop. Look at `src/query.ts` and the surrounding compacting, tool orchestration, permission handling, interrupts, and recovery logic. Most of its magic answers the question “how does this round hand off safely to the next round?” The harness first has to keep running continuously; once continuity is stable, then one can polish the rules between phases.
 
 Both systems agree that models are unreliable. That shared conviction matters. Once you admit the model cannot be left inhabiting shell, files, permissions, and long conversations on its own, a harness must grow—prompt stacking, state persistence, approval, context governance, recovery flows, verification, and local conventions. Only the placement of those organs differs.
 
